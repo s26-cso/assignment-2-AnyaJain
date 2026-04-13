@@ -1,6 +1,10 @@
+#For Q2, output the integers with exactly one space between them and print a newline after that, dont print a space after the last integer
+
 .section .rodata
 
-fmt: .string "%ld " 
+fmt: .string "%ld" 
+fmt2: .string " " 
+fmt3: .string "\n" 
 
 .globl main
 .section .text
@@ -63,8 +67,8 @@ main:
     algo_loop:
         blt s6, x0, print  #s6 is index?
         slli t0, s6, 3
-        add  t0, s2, t0
-        ld   t1, 0(t0)     #t1 = arr[i]
+        add t0, s2, t0
+        ld t1, 0(t0)     #t1 = arr[i]
 
     while_loop:
         blt  t6, zero, while_done    # base case: if stacktop<0, stack empty, exit while
@@ -77,7 +81,7 @@ main:
         add t2, s2, t2
         ld t2, 0(t2)               # t2 = arr[stack[stacktop]]
 
-        bgt  t2, t1, while_done      # if arr[stack[top]] > arr[i], stop popping
+        bgt t2, t1, while_done      # if arr[stack[top]] > arr[i], stop popping
         addi t6, t6, -1              # pop
         j while_loop
 
@@ -94,8 +98,8 @@ main:
         j push
 
     set_neg_one:
-        li   t2, -1
-        sd   t2, 0(t0)
+        li t2, -1
+        sd t2, 0(t0)
         
     push:
         addi t6, t6, 1      # stacktop++
@@ -106,11 +110,9 @@ main:
         addi s6, s6, -1    # i--
         j algo_loop
 
-    algo_done:
-        li   s5, 0
-
     print:
         li s5, 0
+        addi s1,s1,-1
 
     print_loop:
         bge  s5, s1, finish
@@ -120,11 +122,21 @@ main:
         ld a1, 0(t0)        # a1 = arr[i]
         la a0, fmt          # "%ld "
         call printf
+        la a0, fmt2
+        call printf
 
         addi s5, s5, 1
         j print_loop
         
     finish:
+        slli t0, s5, 3
+        add t0, s3, t0
+        ld a1, 0(t0)
+        la a0, fmt
+        call printf
+        la a0, fmt3
+        call printf
+        
         ld s6, 48(sp)
         ld ra, 40(sp)
         ld s1, 32(sp)
