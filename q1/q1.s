@@ -50,15 +50,15 @@ insert: #insert a node with value val into the tree with the given root. Return 
     j insert_done
 
     not_null:
-        ld t0, 0(s1)
+        ld t0, 0(s1)    #t0 now has root's int
         bge s2, t0, right
 
     left:
         #if our int < node int then go left
         ld a0, 8(s1)
         mv a1, s2
-        call insert
-        sd a0, 8(s1)
+        call insert      #recurse with this node as new root
+        sd a0, 8(s1)    #store modified subtree
         j finish
 
     right:
@@ -91,7 +91,7 @@ get: #Return a pointer to a node with value val in the tree. Return NULL if no s
     mv s1, a0 #pointer to root
     mv s2, a1 #integer to be found
 
-    base_case:
+    base_case: #root empty
         bne s1, x0, check_success
         li a0, 0
         j done
@@ -158,8 +158,8 @@ getAtMost: # Return the greatest value present in the tree which is <= val. Retu
         mv a0, s1
         call getAtMost
         li t0, -1
-        bne a0, t0, over
-        ld a0, 0(s2)
+        bne a0, t0, over 
+        ld a0, 0(s2)    #current node's value (if nothing at right)
 
     over:
 
